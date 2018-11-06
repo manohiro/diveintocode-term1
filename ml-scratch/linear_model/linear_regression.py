@@ -35,9 +35,10 @@ class ScratchLinearRegression():
         self.no_bias = no_bias
         self.verbose = verbose
         # 損失を記録する配列を用意
-        self.theta__ = np.zeros(1)
         self.train_loss = []
         self.val_loss = []
+        # 学習した重み(パラメータ)
+        self.theta = np.zeros(1)
 
     def fit(self, X, y, X_val=None, y_val=None):
         """
@@ -55,7 +56,7 @@ class ScratchLinearRegression():
             検証用データの正解値
         """
         # パラメータ推定
-        self._gradient_descent(X, y, X_val, y_val)
+        self.__gradient_descent(X, y, X_val, y_val)
         
         if self.verbose:
             #verboseをTrueにした際は学習過程を出力
@@ -79,7 +80,7 @@ class ScratchLinearRegression():
 
         return self._linear_hypothesis(X)
     
-    def _gradient_descent(self, X, y, X_val, y_val):
+    def __gradient_descent(self, X, y, X_val, y_val):
         """
         最急降下法の計算
         
@@ -94,6 +95,10 @@ class ScratchLinearRegression():
         y_val : 次の形のndarray, shape (n_samples, )
             検証用データの正解値
         """
+        # 損失を記録する配列を初期化
+        self.train_loss = []
+        self.val_loss = []
+        
         # バイアス項判断
         if(self.no_bias):
             # パラメータthetaを乱数シードで代入
@@ -126,9 +131,9 @@ class ScratchLinearRegression():
                 # ロス結果追加
                 self.val_loss.append(np.sum(E_val ** 2) / (2*len(y_val)))
             
-        self.theta__ = theta
+        self.__theta = theta
         
-    def _linear_hypothesis(self, X):
+    def __linear_hypothesis(self, X):
         """
         線形の仮定関数を計算する。
 
@@ -146,7 +151,7 @@ class ScratchLinearRegression():
         # バイアス項判断
         if(not self.no_bias):
             X = np.insert(X, 0, 1, axis=1)
-        return np.dot(np.array(X), self.theta__)
+        return np.dot(np.array(X), self.__theta)
     
     def mode_loss(self):
         """
