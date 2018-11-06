@@ -45,13 +45,10 @@ def train_test_split(X, y, train_size=0.8, stratify=False):
         data_num = len(y_np)
         # 結合
         data = np.hstack((X_np, y_np[:,None]))
-
-        # tarinデータ格納
-        label_data_train = []
-        # testデータ格納
-        label_data_test = []
+        
+        flag = False        
         # labelの数だけ回す
-        for label in labels:
+        for label in labels:            
             # ラベルごとにデータを抽出
             label_data = data[data[:,feature_num] == label]
             # 各ラベルごとのサイズ
@@ -60,16 +57,28 @@ def train_test_split(X, y, train_size=0.8, stratify=False):
             label_train_size = (label_data_size / data_num) * train_size
             # トレインサイズ
             train_lines_num = math.floor(label_train_size * label_data_size)
-            # tarinデータ
-            label_data_train.append(label_data[:train_lines_num:])
-            # testデータ
-            label_data_test.append(label_data[(train_lines_num + 1)::])
-        
+            
+            if(not flag):
+                # 1回のみ
+                flag = True
+                # tarinデータ
+                label_data_train = label_data[:train_lines_num:]
+                print(label_data_train)
+                print("===========================")
+                # testデータ
+                label_data_test = label_data[(train_lines_num + 1)::]
+            else:
+                # 2回目以降 行列を結合
+                # tarinデータ
+                label_data_train = np.vstack((label_data_train, label_data[:train_lines_num:]))
+                # testデータ
+                label_data_test = np.vstack((label_data_test, label_data[(train_lines_num + 1)::]))
+                
         # xとyを分ける
-        X_train = np.array(label_data_train)[:,0:(feature_num-1)]
+        X_train = np.array(label_data_train)[:,:feature_num]
         y_train = np.array(label_data_train)[:,feature_num]
-
-        X_test = np.array(label_data_test)[:,0:(feature_num-1)]
+        
+        X_test = np.array(label_data_test)[:,:(feature_num-1)]
         y_test = np.array(label_data_test)[:,feature_num]
     else:
         # 行数を取得
