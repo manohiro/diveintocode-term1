@@ -1,4 +1,4 @@
-class SVM_test:
+class ScratchSVM:
     def __init__(self, num_iter, lr):
         self.iter = num_iter
         self.lr = lr
@@ -25,7 +25,6 @@ class SVM_test:
         # サポートベクター判定
         self.a_sv = a[a >= 1e-5]
         index_sv = np.where(a >= 1e-5)[0]
-        print(index_sv)
         self.y_label = y[index_sv]
         self.sv_lt = X[index_sv]       
         
