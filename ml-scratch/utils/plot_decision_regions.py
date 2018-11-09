@@ -3,6 +3,9 @@ from matplotlib.colors import ListedColormap
 # 可視化関数
 def plot_decision_regions(X, model):
     plt.scatter(X[:,0], X[:,1], s=80, c=y, marker='o')
+    # サポートベクター可視化
+    for sv in model.sv_lt:
+        plt.scatter(sv[0], sv[1], s=80, c='c', marker='o')
     
     #サポートベクターも同様にプロット
     step = 0.1
